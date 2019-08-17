@@ -26,7 +26,7 @@ public class LilioraBot extends TelegramLongPollingBot {
         long chat_id = update.getMessage().getChatId();
 
 
-        // String message_text = null;
+        // String message_text = null;11
 
         if (("/start").equals(update.getMessage().getText()))
             startMessage(update);
