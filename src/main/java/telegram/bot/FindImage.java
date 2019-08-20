@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class FindImage {
@@ -35,10 +36,7 @@ public class FindImage {
 
         String imageUrl;
 
-        Document doc = Jsoup.connect(google)
-                .timeout(3000)
-                .get();
-        links = doc.select("div.rg_meta.notranslate");
+       links=getResultList(google);
         if (links.size() == 0) return null;
 
 
@@ -84,11 +82,18 @@ public class FindImage {
 
     }
 
-    public File findNext(int i) {
+    public File findNext(String stringForSearch) {
+        results.clear();
+        String google = googleUrl + stringForSearch;
+        System.out.println(google);
         String imageUrl;
         Boolean isFind = false;
 
+        links=getResultList(google);
+        if (links.size() == 0) return null;
+Random rand = new Random();
         do {
+            int i=rand.nextInt(30);
 
 
             imageUrl = new JSONObject( links.get(i).ownText()).get("ou").toString();
@@ -136,6 +141,20 @@ public class FindImage {
 
         Files.copy(in, Paths.get(fileName), StandardCopyOption.REPLACE_EXISTING);
         return new File(fileName);
+    }
+
+    public Elements getResultList(String google){
+
+        Document doc = null;
+        try {
+            doc = Jsoup.connect(google)
+                    .timeout(3000)
+                    .get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        links = doc.select("div.rg_meta.notranslate");
+        return links;
     }
 }
 
